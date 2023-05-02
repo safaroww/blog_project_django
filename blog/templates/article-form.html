@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+
+
+
+{% block main %}
+
+{% static 'assets/img/about-bg.jpg' as home_image %}
+{% include 'includes/banner.html' with banner_title='Add Article' banner_description='Write your articles' banner_image=home_image %}
+
+    <div class="div">
+        <div class="row justify-content-center">
+            <div class="col-6 bg-ligth border border-dark">
+                <div class="row">
+                    <div class="box">
+                        <h2>Add Article</h2>
+                    </div>
+                    <form method='POST' enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{form.as_div}}
+                        <input type="submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock main %}

@@ -1,0 +1,114 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block main %}
+
+{% static 'assets/img/home-bg.jpg' as blog_image %}
+{% include 'includes/banner.html' with banner_title='Clean Blog' banner_description='A Blog Theme by Start Bootstrap' banner_image=blog_image %}
+
+<!-- Main Content-->
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5">
+        <div class="col-md-12 col-lg-4 col-xl-3">
+            <div class="h3">Authors</div>
+            <ul class="p-0">
+                {% for author in authors %}
+                {% if author.article_count != 0 %}
+                    <li><a href="?author={{author.user.username}}">{{author.user.username}} ({{author.article_count}}) - {{author.view_count}}</a></li>
+                {% endif %}
+                {% endfor %}
+                <li><a href="{% url 'blog:blog' %}">All</a></li>
+            </ul>
+            <hr>
+            <div class="h3">Tags</div>
+            <ul class="p-0">
+                {% for tag in tags %}
+                    <li><a href="?tag={{tag.title}}">{{tag.title}} ({{tag.article_count}}) - {{tag.view_count}}</a></li>
+                {% endfor %}
+                <li><a href="{% url 'blog:blog' %}">All</a></li>
+            </ul>
+            <div class="h3">Statistics</div>
+            <ul class="p-0">
+                <li>Total Article : {{total_article_count}}</li>
+                <li>Total View Count : {{view_count_statistic.total_view_count}}</li>
+                <li>Avarage View Count : {{view_count_statistic.avg_view_count|floatformat:1}}</li>
+                <li>Max View Count : {{view_count_statistic.max_view_count}}</li>
+                <ul>
+                    {% for article in max_viewed_article %}
+                        <li>{{article.title}}</li>
+                    {% endfor %}
+                </ul>
+                <li>Min View Count : {{view_count_statistic.min_view_count}}</li>
+                <ul>
+                    {% for article in min_viewed_article %}
+                        <li>{{article.title}}</li>
+                    {% endfor %}
+                </ul>
+            
+            </ul>
+        </div>
+        <div class="col-md-12 col-lg-8 col-xl-9">
+            {% for article in articles %}
+                <!-- Post preview-->
+                <div class="post-preview">
+                    <a href="{% url 'blog:blog-detail' pk=article.id %}">
+                        <h2 class="post-title">{{article.title}}</h2>
+                        <h3 class="post-subtitle">{{article.description}}</h3>
+                    </a>
+                    <p class="post-meta">
+                        Posted by
+                        <a href="?author={{article.author.user.username}}">{{article.author.user.username}}</a>    
+                        on {{article.created}}
+                    </p>
+                    <div>
+                        {% for tag in article.tags.all %}
+                            <a href="?tag={{tag.title}}" class="badge bg-secondary rounded">{{tag.title}}</a>
+                        {% endfor %}
+                        
+                    </div>
+                    <div>
+                        {% if article.author == request.user.author %}
+                            <a href="{% url 'blog:edit-article' pk=article.pk %}" class="badge bg-success rounded">Edit</a>
+                            <a href="{% url 'blog:delete-article' pk=article.pk %}" class="badge bg-danger rounded">Delete</a>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+                <!-- Divider-->
+                <hr class="my-4" />
+            {% endfor %}
+            
+            <!-- Pager-->
+
+        </div>
+        <nav class="d-flex justify-content-center">
+            <ul class="pagination">
+                {% if page.has_previous %}
+                    <li class="page-item ">
+                        <a class="page-link" href="?page={{page.previous_page_number}}">Previous</a>
+                    </li>   
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Previous</span>
+                    </li> 
+                {% endif %}
+
+              {% for page_number in paginator.page_range %}
+                <li class="page-item {% if page_number == page.number %}active{% endif %}" ><a class="page-link" href="?page={{page_number}}">{{page_number}}</a></li>
+              {% endfor %}
+              
+              {% if page.has_next %}
+                    <li class="page-item ">
+                        <a class="page-link" href="?page={{page.next_page_number}}">Next</a>
+                    </li>   
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Next</span>
+                    </li> 
+                {% endif %}
+            </ul>
+          </nav>
+    </div>
+</div>
+{% endblock main %}
+

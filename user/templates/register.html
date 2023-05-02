@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+
+
+
+{% block main %}
+
+{% static 'assets/img/about-bg.jpg' as home_image %}
+{% include 'includes/banner.html' with banner_title='Register' banner_description='Register to get news about blogs' banner_image=home_image %}
+
+    <div class="div">
+        <div class="row justify-content-center">
+            <div class="col-6 bg-ligth border border-dark">
+                <div class="row">
+                    <div class="box">
+                        <h2>Register</h2>
+                    </div>
+                    <form method='POST'>
+                        {% csrf_token %}
+                        {{form.as_div}}
+                        <input type="submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock main %}

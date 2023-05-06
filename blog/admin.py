@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article, Author, Tag, ArticleImage
+from .models import Article, Author, Tag, ArticleImage, ArticleReview
 
 # Register your models here.
 
@@ -22,6 +22,14 @@ class ArticleImageInline(admin.TabularInline):
     model = ArticleImage
     extra = 0
     readonly_fields = ['current_image']
+
+
+# ArticleReviewAdmin
+class ArticleReviewAdmin(admin.TabularInline):
+    model = ArticleReview
+    extra = 1
+
+
 
 
 @admin.register(Article)
@@ -47,4 +55,4 @@ class ArticleAdmin(admin.ModelAdmin):
     list_filter = ['tags', 'author', 'created']
     search_fields = ['title', 'author__user__first_name', 'tags__title']
     actions = [make_visible, make_invisible]
-    inlines = [ArticleImageInline]
+    inlines = [ArticleImageInline, ArticleReviewAdmin]

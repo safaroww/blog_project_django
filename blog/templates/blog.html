@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load static %}
+{% load utils %}
 
 {% block main %}
 
@@ -52,14 +53,18 @@
                 <!-- Post preview-->
                 <div class="post-preview">
                     <a href="{% url 'blog:blog-detail' pk=article.id %}">
-                        <h2 class="post-title">{{article.title}}</h2>
-                        <h3 class="post-subtitle">{{article.description}}</h3>
+                        <h2 class="post-title">{{article.title|convert_en}}</h2>
+                        <h3 class="post-subtitle">{{article.description|convert_en}}</h3>
                     </a>
                     <p class="post-meta">
                         Posted by
                         <a href="?author={{article.author.user.username}}">{{article.author.user.username}}</a>    
                         on {{article.created}}
                     </p>
+
+                    {% create_stars article.avg_star %}
+                    {% comment %} {{article.avg_star}} {% endcomment %}
+
                     <div>
                         {% for tag in article.tags.all %}
                             <a href="?tag={{tag.title}}" class="badge bg-secondary rounded">{{tag.title}}</a>
@@ -85,7 +90,7 @@
             <ul class="pagination">
                 {% if page.has_previous %}
                     <li class="page-item ">
-                        <a class="page-link" href="?page={{page.previous_page_number}}">Previous</a>
+                        <a class="page-link" href="{% edit_params request 'page' previous_page_number %}">Previous</a>
                     </li>   
                 {% else %}
                     <li class="page-item disabled">
@@ -94,12 +99,12 @@
                 {% endif %}
 
               {% for page_number in paginator.page_range %}
-                <li class="page-item {% if page_number == page.number %}active{% endif %}" ><a class="page-link" href="?page={{page_number}}">{{page_number}}</a></li>
+                <li class="page-item {% if page_number == page.number %}active{% endif %}" ><a class="page-link" href="{% edit_params request 'page' page_number %}">{{page_number}}</a></li>
               {% endfor %}
               
               {% if page.has_next %}
                     <li class="page-item ">
-                        <a class="page-link" href="?page={{page.next_page_number}}">Next</a>
+                        <a class="page-link" href="{% edit_params request 'page' next_page_number %}">Next</a>
                     </li>   
                 {% else %}
                     <li class="page-item disabled">

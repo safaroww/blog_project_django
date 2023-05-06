@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.admin import display
 from django.utils.html import format_html
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 
@@ -56,3 +57,11 @@ class ArticleImage(models.Model):
     @display(description='Movcud Sekil')
     def current_image(self):
         return format_html(f'<img width="200" src="{self.image.url}">')
+    
+
+class ArticleReview(models.Model):
+    star_count = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='reviews')
+
+# article.articlerewiev_set
+# article.reviews

@@ -1,0 +1,19 @@
+{% if no_review %}
+    <i class="fa-regular fa-star"></i>
+    <i class="fa-regular fa-star"></i>
+    <i class="fa-regular fa-star"></i>
+    <i class="fa-regular fa-star"></i>
+    <i class="fa-regular fa-star"></i>
+{% else %}
+    <div>
+        {% for _ in filled_stars %}
+            <i class="fa-solid fa-star"></i>
+        {% endfor %}
+        {% if half_stars %}
+            <i class="fa-solid fa-star-half-stroke"></i>
+        {% endif %}
+        {% for _ in empty_stars %}
+            <i class="fa-regular fa-star"></i>
+        {% endfor %}
+    </div>
+{% endif %}

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.db.models import F
 from django.db.models.aggregates import Count, Sum, Avg, Max, Min
-from .models import Article, Author, Tag
+from .models import Article, Author, Tag, ArticleReview
 from .forms import ArticleForm
 from django.core.paginator import Paginator
 
@@ -10,7 +10,7 @@ from django.core.paginator import Paginator
 
 
 def blog(request):
-    articles = Article.objects.filter(show=True) 
+    articles = Article.objects.filter(show=True).annotate(avg_star=Avg('reviews__star_count'))
     authors = Author.objects.all().annotate(article_count=Count('article'), view_count=Sum('article__view_count')).order_by('-view_count')
     tags = Tag.objects.all().annotate(article_count=Count('article'), view_count=Sum('article__view_count')).order_by('-view_count')
 
@@ -53,7 +53,8 @@ def blogdetail(request, pk):
     article.view_count = F('view_count') + 1
     article.save()
     article.refresh_from_db(fields=['view_count'])
-    return render(request, 'blog-detail.html', context={'article': article})
+    star_count_avg = article.reviews.all().aggregate(avg_count=Avg('star_count'))['avg_count']
+    return render(request, 'blog-detail.html', context={'article': article, 'star_count_avg': star_count_avg})
 
 
 def add_article(request):
@@ -91,3 +92,10 @@ def delete_article(request, pk):
         raise PermissionDenied()
     article.delete()
     return redirect('blog:blog')
+
+
+def add_review(request, pk, count):
+    article = get_object_or_404(Article, pk=pk)
+    review = ArticleReview(article=article, star_count=count)
+    review.save()
+    return redirect(request.META['HTTP_REFERER'])

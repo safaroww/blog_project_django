@@ -20,6 +20,7 @@
                         on {{article.created_at}}
                     </span>
                     <div>View Count : {{article.view_count}}</div>
+                    <div>Average Review : {{star_count_avg|floatformat:2}}</div>
                 </div>
             </div>
         </div>
@@ -39,7 +40,15 @@
                         <div><img style="width: 100%; height: 500px; object-fit: cover; object-position: center;" src="{{image.image.url}}" alt=""></div>
                     {% endfor %}
                 </div>
+                <div class="col-md-10 col-lg-8 col-xl-7 h3">
+                    <a href="{% url 'blog:add-review' pk=article.pk count=1 %}"><i class="fa-regular fa-star"></i></a>
+                    <a href="{% url 'blog:add-review' pk=article.pk count=2 %}"><i class="fa-regular fa-star"></i></a>
+                    <a href="{% url 'blog:add-review' pk=article.pk count=3 %}"><i class="fa-regular fa-star"></i></a>
+                    <a href="{% url 'blog:add-review' pk=article.pk count=4 %}"><i class="fa-regular fa-star"></i></a>
+                    <a href="{% url 'blog:add-review' pk=article.pk count=5 %}"><i class="fa-regular fa-star"></i></a>
+                </div>
             </div>
+        </div>
     </div>
 </article>
 {% endblock main %}
